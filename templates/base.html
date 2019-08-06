@@ -1,0 +1,87 @@
+{# For index.html, login.html, register.html #}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+{% load staticfiles %}
+{% load utils-absolute-url %}
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    {# page title #}
+    <title>{% block title %}{% endblock title %}</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    {% block headfiles %}{% endblock %}
+</head>
+<body>
+{# header container - welcome board #}
+{% block header_container %}
+    <div class="header_con">
+        <div class="header">
+            <div class="welcome fl">Welcome to SuperbFresh!</div>
+            <div class="fr">
+                {% if user.is_authenticated %}
+                    <div class="login_btn fl">
+                        Welcome <em>{{ user.username }}</em>
+                        <span>|</span>
+                        <a href="{% absolute_url 'user:logout' %}">Logout</a>
+                    </div>
+                {% else %}
+                    <div class="login_btn fl">
+                        <a href="{% absolute_url 'user:login' %}">Login</a>
+                        <span>|</span>
+                        <a href="{% absolute_url 'user:register' %}">Register</a>
+                    </div>
+                {% endif %}
+                <div class="user_link fl">
+                    <span>|</span>
+                    <a href="{% absolute_url 'user:user' %}">My Account</a>
+                    <span>|</span>
+                    <a href={% absolute_url 'cart:show' %}>My Cart</a>
+                    <span>|</span>
+                    <a href="{% absolute_url 'user:order' 1 %}">My Order</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock header_container %}
+
+{% block search_bar %}
+    <div class="search_bar clearfix">
+        <a href="index.html" class="logo fl"><img src="{% static  'images/logo.png' %}"></a>
+        <div class="search_con fl">
+            <form method="get" action="{% absolute_url 'es:search' %}">
+                <input type="text" class="input_text fl" name="q" placeholder="Search Item">
+                <input type="submit" class="input_btn fr" name="" value="search">
+            </form>
+        </div>
+        <div class="guest_cart fr">
+            <a href="{% absolute_url 'cart:show' %}" class="cart_name fl">Cart</a>
+            <div class="goods_count fl" id="show_count">{{ cart_count }}</div>
+        </div>
+    </div>
+{% endblock search_bar %}
+
+{# page's body #}
+{% block body %}{% endblock body %}
+
+<div class="footer no-mp">
+    <div class="foot_link">
+        <a href="#">About Us</a>
+        <span>|</span>
+        <a href="#">Contact Us</a>
+        <span>|</span>
+        <a href="#">Jobs Opportunity</a>
+        <span>|</span>
+        <a href="#">Partnership</a>
+    </div>
+    <p>CopyRight © 2019 SuperbFresh Inc All Rights Reserved</p>
+    <p>Phone：666-666-6666</p>
+</div>
+
+{#  pages' bottom html files #}
+{% block bottom_html_files %}{% endblock bottom_html_files %}
+{#  pages' bottom files Ex: (js files) #}
+{% block bottomfiles %}{% endblock bottomfiles %}
+</body>
+</html>
