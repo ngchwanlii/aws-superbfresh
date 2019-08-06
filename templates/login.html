@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}SuperbFresh | Login {% endblock title %}
+{% block header_container %}{% endblock header_container %}
+{% block search_bar %}{% endblock search_bar %}
+
+{% block body %}
+    <div class="login_top clearfix">
+        <a href="index.html" class="login_logo"><img src="{% static 'images/logo02.png' %}"></a>
+    </div>
+
+    <div class="login_form_bg">
+        <div class="login_form_wrap clearfix">
+            <div class="login_banner fl"></div>
+            <div class="login_form fr">
+                <div class="login_title clearfix">
+                    <h1>Login</h1>
+                    <a href="{% url 'user:register' %}">Register</a>
+                </div>
+                <div class="form_input">
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="text" name="username" class="name_input" value="{{ username }}"
+                               placeholder="Username">
+                        <div class="user_error">Invalid email</div>
+                        <input type="password" name="pwd" class="pass_input" placeholder="Password">
+                        <div class="pwd_error">Invalid password</div>
+                        <div class="more_input clearfix">
+                            <input type="checkbox" name="remember" {{ checked }}>
+                            <label>Remember Me</label>
+                        </div>
+                        <input type="submit" name="" value="Login" class="input_submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ errmsg }}
+{% endblock body %}
+

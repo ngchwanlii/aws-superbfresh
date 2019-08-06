@@ -53,7 +53,7 @@ ROOT_URLCONF = 'superbfresh.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -62,6 +62,10 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'utils-float': 'templatetags.get_float',
+                'utils-absolute-url': 'templatetags.absolute_url',
+            }
         },
     },
 ]
@@ -85,6 +89,8 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 AUTH_USER_MODEL = 'user.User'
+# allow inactive user to login with authenticate(), then perform logic check in LoginView
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.AllowAllUsersModelBackend']
 
 AUTH_PASSWORD_VALIDATORS = [
     {
