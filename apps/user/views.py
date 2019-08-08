@@ -1,7 +1,7 @@
 import re
 
 from django.conf import settings
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.core import signing
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -133,44 +133,11 @@ class ActivateView(View):
         return redirect(reverse('user:login'))
 
 
-# URL: /user/login
-class LoginView(View):
+# /user/logout
+class LogoutView(View):
 
     def get(self, request):
+        # clear user's session + logout
+        logout(request)
 
-        username = ''
-        checked = ''
-        if 'username' in request.COOKIES:
-            username = request.COOKIES.get('username')
-            checked = 'checked'
-
-        return render(request, 'login.html', {'username': username, 'checked': checked})
-
-    def post(self, request):
-
-        username = request.POST.get('username')
-        password = request.POST.get('pwd')
-        remember = request.POST.get('remember')
-
-        if not all([username, password]):
-            return render(request, 'login.html', {'errmsg': 'Fields incomplete'})
-
-        user = authenticate(username=username, password=password)
-        if not user:
-            return render(request, 'login.html', {'errmsg': 'Invalid email or password'})
-
-        if not user.is_active:
-            return render(request, 'login.html', {'errmsg': 'User account is not activate'})
-
-        login(request, user)
-
-        next_url = request.GET.get('next', reverse('goods:index'))
-
-        response = redirect(next_url)
-
-        if remember == 'on':
-            response.set_cookie('username', username, max_age=7 * 24 * 3600)
-        else:
-            response.delete_cookie('username')
-
-        return response
+        return redirect(reverse('goods:index'))
