@@ -72,6 +72,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'superbfresh.wsgi.application'
 
+BASE_HOST = os.environ.get('BASE_HOST')
+BASE_PORT = os.environ.get('BASE_PORT')
+BASE_SCHEME = os.environ.get('BASE_SCHEME')
+BASE_URL = "{BASE_SCHEME}://{BASE_HOST}:{BASE_PORT}".format(
+    BASE_SCHEME=BASE_SCHEME,
+    BASE_HOST=BASE_HOST,
+    BASE_PORT=BASE_PORT
+)
+
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -86,11 +95,32 @@ DATABASES = {
     }
 }
 
+# Redis Cluster Cache
+REDIS_PORT = os.environ.get('REDIS_PORT')
+REDIS_ENDPOINT = os.environ.get('REDIS_ENDPOINT')
+# For tcp connection (ssl use rediss://{ENDPOINT}:{PORT}/)
+REDIS_BROKER_LOCATION = "redis://{ENDPOINT}:{PORT}".format(ENDPOINT=REDIS_ENDPOINT, PORT=REDIS_PORT)
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": REDIS_BROKER_LOCATION,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 AUTH_USER_MODEL = 'user.User'
 # allow inactive user to login with authenticate(), then perform logic check in LoginView
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.AllowAllUsersModelBackend']
+
+SALT = os.environ.get('SALT')
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -106,6 +136,15 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Email settings (through Amazon SES)
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+AWS_SES_EMAIL_PORT = os.environ.get('AWS_SES_EMAIL_PORT')
+AWS_SES_REGION_ENDPOINT = os.environ.get('AWS_SES_REGION_ENDPOINT')
+# SES smtp username
+AWS_SES_ACCESS_KEY_ID = os.environ.get('AWS_SES_ACCESS_KEY_ID')
+# SES smtp pass
+AWS_SES_SECRET_ACCESS_KEY = os.environ.get('AWS_SES_SECRET_ACCESS_KEY')
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
