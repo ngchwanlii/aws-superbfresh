@@ -1,0 +1,43 @@
+{% extends 'base_user_center.html' %}
+{% block right_content %}
+    <div class="right_content clearfix">
+        <h3 class="common_title2">Address</h3>
+        <div class="site_con">
+            <dl>
+                <dt>Current Address</dt>
+                {% if address %}
+                    <dd>Address: {{ address.addr }}</dd>
+                    <dd>Receiver: {{ address.receiver }}</dd>
+                    <dd>Phone: {{ address.phone }}</dd>
+                {% else %}
+                    <dd>No default address</dd>
+                {% endif %}
+            </dl>
+        </div>
+        <h3 class="common_title2">Edit Address</h3>
+        <div class="site_con">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form_group">
+                    <label>Receiver：</label>
+                    <input type="text" name="receiver">
+                </div>
+                <div class="form_group form_group2">
+                    <label>Address：</label>
+                    <textarea class="site_area" name="addr"></textarea>
+                </div>
+                <div class="form_group">
+                    <label>Zip code：</label>
+                    <input type="text" name="zip_code">
+                </div>
+                <div class="form_group">
+                    <label>Phone：</label>
+                    <input type="text" name="phone">
+                </div>
+
+                <input type="submit" value="Submit" class="info_submit">
+            </form>
+        </div>
+    </div>
+{% endblock right_content %}
+

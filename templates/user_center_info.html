@@ -1,0 +1,41 @@
+{% extends 'base_user_center.html' %}
+{% block right_content %}
+    <div class="right_content clearfix">
+        <div class="info_con clearfix">
+            <h3 class="common_title2">Account</h3>
+            <ul class="user_info_list">
+                <li><span>Username：</span>{{ user.username }}</li>
+                {% if address %}
+                    <li><span>Contact：</span>{{ address.phone }}</li>
+                    <li><span>Address：</span>{{ address.addr }}</li>
+                {% else %}
+                    <li><span>Contact：</span>No default contact</li>
+                    <li><span>Address：</span>No default address</li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <h3 class="common_title2">Browsing History</h3>
+        <div class="has_view_list">
+            <ul class="goods_type_list clearfix">
+                {% for goods in goods_list %}
+                    <li>
+                        <a href="{% url 'goods:detail' goods.id %}"><img src="{{ goods.image.url }}"></a>
+                        <h4><a href="detail.html">{{ goods.name }}</a></h4>
+                        <div class="operate">
+                            <span class="prize">{{ goods.price }}</span>
+                            <span class="unit">{{ goods.price }}/{{ goods.unit }}</span>
+                        </div>
+                    </li>
+                {% empty %}
+                    No browsing history
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock right_content %}
+
+
+
+
+
