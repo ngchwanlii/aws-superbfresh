@@ -1,0 +1,183 @@
+{% extends 'base_detail_list.html' %}
+{% load staticfiles %}
+{% block title %}SuperbFresh | Product details{% endblock title %}
+
+{% block main_content %}
+    <div class="breadcrumb">
+        <a href="{% url 'goods:index' %}">Departments</a>
+        <span>></span>
+        <a href="{% url 'goods:list' sku.type.id 1 %}">{{ sku.type.name }}</a>
+    </div>
+
+    <div class="goods_detail_con clearfix">
+        <div class="goods_detail_pic fl"><img src="{{ sku.image.url }}"></div>
+
+        <div class="goods_detail_list fr">
+            <h3>{{ sku.name }}</h3>
+            <p>{{ sku.desc }}</p>
+            <div class="prize_bar">
+                <span class="show_pirze">$<em>{{ sku.price }}</em></span>
+                <span class="show_unit">Unit：{{ sku.unit }}</span>
+            </div>
+            <div class="goods_num clearfix">
+                <div class="num_name fl">Quantity：</div>
+                <div class="num_add fl">
+                    <input type="text" class="num_show fl" value="1">
+                    <a href="javascript:;" class="add fr">+</a>
+                    <a href="javascript:;" class="minus fr">-</a>
+                </div>
+            </div>
+            <div>
+                <p>Other specification:</p>
+                <ul>
+                    {% for sku in same_spu_skus %}
+                        <li><a href="{% url 'goods:detail' sku.id %}">{{ sku.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="total">Total price：<em>{{ sku.price }}</em></div>
+            <div class="operate_btn">
+                <a href="javascript:;" sku_id="{{ sku.id }}" class="add_cart" id="add_cart">Add to cart</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main_wrap clearfix">
+        <div class="l_wrap fl clearfix">
+            <div class="new_goods">
+                <h3>Recommended New Products</h3>
+                <ul>
+                    {% for sku in new_skus %}
+                        <li>
+                            <a href="{% url 'goods:detail' sku.id %}">
+                                <img src="{{ sku.image.url }}">
+                            </a>
+                            <h4>
+                                <a href="{% url 'goods:detail' sku.id %}">{{ sku.name }}</a>
+                            </h4>
+                            <div class="prize">${{ sku.price }}</div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="r_wrap fr clearfix">
+            <ul class="detail_tab clearfix">
+                <li id="tag_detail" class="active">Product</li>
+                <li id="tag_comment">Customer reviews</li>
+            </ul>
+
+            <div class="tab_content" id="tab_detail">
+                <dl>
+                    <dt>Product details：</dt>
+                    <dd>{{ sku.goods.detail|safe }}</dd>
+                </dl>
+            </div>
+
+            <div class="tab_content" id="tab_comment" style="display: none">
+                <dl>
+                    {% for order in sku_orders %}
+                        <dt>Time：{{ order.update_time }}&nbsp;&nbsp;Username:{{ order.order.user.username }}</dt>
+                        <dd>Comment: {{ order.comment }}</dd>
+                    {% endfor %}
+                </dl>
+            </div>
+        </div>
+    </div>
+{% endblock main_content %}
+{% block bottom_html_files %}
+    <div class="add_jump"></div>
+{% endblock bottom_html_files %}
+{% block bottomfiles %}
+    <script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/js.cookie.js' %}"></script>
+    <script type="text/javascript">
+        $('#tag_detail').click(function () {
+            $('#tag_comment').removeClass('active')
+            $(this).addClass('active')
+            $('#tab_detail').show()
+            $('#tab_comment').hide()
+        })
+
+        $('#tag_comment').click(function () {
+            $('#tag_detail').removeClass('active')
+            $(this).addClass('active')
+            $('#tab_comment').show()
+            $('#tab_detail').hide()
+        })
+
+        function update_goods_total_price() {
+            price = $('.show_pirze').children('em').text()
+            count = $('.num_show').val()
+            total_price = parseFloat(price) * parseInt(count)
+            $('.total').children('em').text('$' + total_price.toFixed(2))
+        }
+
+        {# add / minus product count #}
+        $('.add').click(function () {
+            count = $('.num_show').val()
+            count = parseInt(count) + 1
+            $('.num_show').val(count)
+            update_goods_total_price()
+        })
+
+        $('.minus').click(function () {
+            count = $('.num_show').val()
+            count = parseInt(count) - 1
+            if (count <= 0) {
+                count = 1
+            }
+            $('.num_show').val(count)
+            update_goods_total_price()
+        })
+
+        {# manually add / minus product count #}
+        $('.num_show').blur(function () {
+            count = $(this).val()
+            if (isNaN(count) || count.trim().length == 0 || parseInt(count) <= 0) {
+                count = 1
+            }
+            {# must be an integer (ex: even user input 2.5, it must be converted as 2)#}
+            $(this).val(parseInt(count))
+
+            update_goods_total_price()
+        })
+
+        update_goods_total_price()
+        var $add_x = $('#add_cart').offset().top;
+        var $add_y = $('#add_cart').offset().left;
+
+        var $to_x = $('#show_count').offset().top;
+        var $to_y = $('#show_count').offset().left;
+
+        $('#add_cart').click(function () {
+
+            {# get sku_id & cart_count #}
+            sku_id = $(this).attr('sku_id')
+            count = $('.num_show').val()
+            csrf_token = Cookies.get('csrftoken');
+            params = {'sku_id': sku_id, 'count': count, csrfmiddlewaretoken: csrf_token}
+
+            {# ajax post request to cart/add #}
+            $.post('/cart/add', params, function (data) {
+                if (data.res == 5) {
+                    $(".add_jump").css({'left': $add_y + 80, 'top': $add_x + 10, 'display': 'block'})
+                    $(".add_jump").stop().animate({
+                            'left': $to_y + 7,
+                            'top': $to_x + 7
+                        },
+                        "fast", function () {
+                            $(".add_jump").fadeOut('fast', function () {
+                                $('#show_count').html(data.total_cart_count);
+                            });
+                        });
+                } else {
+                    alert(data.errmsg)
+                }
+            })
+
+
+        })
+    </script>
+{% endblock bottomfiles %}
