@@ -1,0 +1,110 @@
+{% extends 'base_no_cart.html' %}
+{% load staticfiles %}
+{% block title %}Superfresh | Order {% endblock title %}
+{% block page_title %}Order{% endblock page_title %}
+{% block body %}
+    <h3 class="common_title">Verify address</h3>
+
+    <div class="common_list_con clearfix">
+        <dl>
+            <dt>Ship to：</dt>
+            {% for addr in addrs %}
+                <dd>
+                    <input type="radio" name="addr_id" value="{{ addr.id }}"
+                            {% if addr.is_default %}
+                           checked
+                            {% endif %}>
+                    {{ addr.addr }} | ({{ addr.receiver }}) | {{ addr.phone }}
+                </dd>
+            {% endfor %}
+        </dl>
+        <a href="{% url 'user:address' %}" class="edit_site">Edit address</a>
+    </div>
+
+    <h3 class="common_title">Pay method</h3>
+    <div class="common_list_con clearfix">
+        <div class="pay_style_con clearfix">
+            <input type="radio" name="pay_style" value=1 checked>
+            <label class="credit_card">Credit card</label>
+        </div>
+    </div>
+
+    <h3 class="common_title">Items</h3>
+
+    <div class="common_list_con clearfix">
+        <ul class="goods_list_th clearfix">
+            <li class="col01">Name</li>
+            <li class="col02">Unit</li>
+            <li class="col03">Price</li>
+            <li class="col04">Quantity</li>
+            <li class="col05">Subtotal</li>
+        </ul>
+        {% for sku in skus %}
+            <ul class="goods_list_td clearfix">
+                <li class="col01">{{ forloop.counter }}</li>
+                <li class="col02"><img src="{{ sku.image.url }}"></li>
+                <li class="col03">{{ sku.name }}</li>
+                <li class="col04">{{ sku.unit }}</li>
+                <li class="col05">${{ sku.price }}</li>
+                <li class="col06">{{ sku.count }}</li>
+                <li class="col07">${{ sku.amount }}</li>
+            </ul>
+        {% endfor %}
+    </div>
+
+    <h3 class="common_title">Calculated prices</h3>
+
+    <div class="common_list_con clearfix">
+        <div class="settle_con">
+            <div class="total_goods_count">
+                Total items<em>{{ total_count }}</em>
+            </div>
+            <div class="total_pay">Total price：<b>${{ total_price }}</b></div>
+        </div>
+    </div>
+
+    <div class="order_submit clearfix">
+        {% csrf_token %}
+        <a href="javascript:;" sku_ids={{ sku_ids }} id="order_btn">Proceed to Checkout</a>
+    </div>
+{% endblock body %}
+{% block bottom %}
+    <div class="popup_con">
+        <div class="popup">
+            <p>Checkout successfully！</p>
+        </div>
+
+        <div class="mask"></div>
+    </div>
+{% endblock bottom %}
+{% block bottomfiles %}
+    <script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/js.cookie.js' %}"></script>
+    <script type="text/javascript">
+
+        $('#order_btn').click(function () {
+            addr_id = $('input[name="addr_id"]:checked').val()
+            pay_method = $('input[name="pay_style"]:checked').val()
+            sku_ids = $(this).attr('sku_ids')
+            csrf_token = Cookies.get('csrftoken')
+            params = {
+                'addr_id': addr_id,
+                'pay_method': pay_method,
+                'sku_ids': sku_ids,
+                'csrfmiddlewaretoken': csrf_token,
+            }
+
+            $.post('/order/commit', params, function (data) {
+
+                if (data.res == 7) {
+                    localStorage.setItem('order_finish', 2);
+                    window.location.href = '/user/order/1'
+                } else {
+                    alert(data.errmsg)
+
+                }
+            })
+
+        });
+    </script>
+{% endblock bottomfiles %}
