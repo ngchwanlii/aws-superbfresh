@@ -21,7 +21,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^tinymce/', include('tinymce.urls')),  # editor
     re_path(r'^user/', include('apps.user.urls', namespace='user')),  # user module
-    re_path('', include('apps.goods.urls', namespace='goods')),  # goods module
     re_path(r'^cart/', include('apps.cart.urls', namespace='cart')),  # cart module
     re_path(r'^order/', include('apps.order.urls', namespace='order')),  # order module
+    re_path(r'^webhooks/', include('apps.webhooks.urls', namespace='webhooks')),  # webhooks module
+    re_path(r'^search', include('apps.search.urls', namespace='es')),  # search module
+    re_path('', include('apps.goods.urls', namespace='goods')),  # goods module
 ]
