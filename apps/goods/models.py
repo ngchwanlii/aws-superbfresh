@@ -1,6 +1,7 @@
 from django.db import models
 from tinymce.models import HTMLField
 
+from apps.search.documents import GoodsSKUIndex
 from db.base_model import BaseModel
 
 
@@ -34,6 +35,16 @@ class GoodsSKU(BaseModel):
     stock = models.IntegerField(default=1, verbose_name='stock')
     sales = models.IntegerField(default=0, verbose_name='sales')
     status = models.SmallIntegerField(default=1, choices=status_choices, verbose_name='status')
+
+    def indexing(self):
+        obj = GoodsSKUIndex(
+            meta={'id': self.id},
+            name=self.name,
+            desc=self.desc,
+        )
+        obj.add_types(self.type.name)
+        obj.save()
+        return obj.to_dict(include_meta=True)
 
     def __str__(self):
         return self.name
@@ -77,7 +88,7 @@ class IndexGoodsBanner(BaseModel):
     index = models.SmallIntegerField(default=0, verbose_name='banner_index_order')  # show banners in order: [0 1 2 3]
 
     def __str__(self):
-        return str(self.sku.id)
+        return str(self.sku.name)
 
     class Meta:
         db_table = 'sf_index_banner'
