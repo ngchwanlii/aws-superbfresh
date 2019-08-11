@@ -1,0 +1,44 @@
+{% extends 'base_detail_list.html' %}
+{% block title %}SuperbFresh | Products Search Result {% endblock title %}
+{% block main_content %}
+    <div class="breadcrumb">
+        <a href="#">Search Result: </a>
+        <span>></span>
+        <a href="#">{{ query }}</a>
+
+    </div>
+    <div class="main_wrap clearfix">
+        <ul class="goods_type_list clearfix">
+            {% for item in page %}
+                <li>
+                    <a href="{% url 'goods:detail' item.id %}"><img src="{{ item.image.url }}"></a>
+                    <h4><a href="{% url 'goods:detail' item.id %}">{{ item.name }}</a></h4>
+                    <div class="operate">
+                        <span class="prize">${{ item.price }}</span>
+                        <span class="unit">{{ item.price }}/{{ item.unit }}</span>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div class="pagenation">
+            {% if page.has_previous %}
+                <a href="/search?q={{ query }}&page={{ page.previous_page_number }}">
+                    < Prev
+                </a>
+            {% endif %}
+            {% for page_index in pages %}
+                {% if page_index == page.number %}
+                    <a href="/search?q={{ query }}&page={{ page_index }}"
+                       class="active">{{ page_index }}
+                    </a>
+                {% else %}
+                    <a href="/search?q={{ query }}&page={{ page_index }}">{{ page_index }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if page.has_next %}
+                <a href="/search?q={{ query }}&page={{ page.next_page_number }}">Next ></a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock main_content %}
