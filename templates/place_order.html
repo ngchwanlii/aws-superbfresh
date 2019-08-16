@@ -18,7 +18,8 @@
                 </dd>
             {% endfor %}
         </dl>
-        <a href="{% url 'user:address' %}" class="edit_site">Edit address</a>
+        <a href="{% url 'user:address' %}?next={{ request.META.HTTP_REFERER | urlencode }}" class="edit_site">Edit
+            address</a>
     </div>
 
     <h3 class="common_title">Pay method</h3>

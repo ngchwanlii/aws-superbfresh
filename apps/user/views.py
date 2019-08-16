@@ -279,4 +279,5 @@ class AddressView(LoginRequiredMixin, View):
                                is_default=is_default
                                )
 
-        return redirect(reverse('user:address'))
+        next_url = request.POST.get('next', reverse('user:address'))
+        return redirect(next_url)

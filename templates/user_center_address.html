@@ -19,6 +19,7 @@
         <div class="site_con">
             <form method="post">
                 {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
                 <div class="form_group">
                     <label>Receiver：</label>
                     <input type="text" name="receiver">

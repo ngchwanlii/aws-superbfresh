@@ -9,9 +9,9 @@
             <h3>User Center</h3>
             <ul>
                 <li><a href="{% url 'user:user' %}" {% if page == 'user' %}class="active"{% endif %}> Account </a></li>
-                <li><a href="{% url 'user:order' 1 %}" {% if page == 'order' %}class="active"{% endif %}> Orders </a>
-                </li>
                 <li><a href="{% url 'user:address' %}" {% if page == 'address' %}class="active"{% endif %}> Address </a>
+                </li>
+                <li><a href="{% url 'user:order' 1 %}" {% if page == 'order' %}class="active"{% endif %}> Orders </a>
                 </li>
             </ul>
         </div>
