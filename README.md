@@ -136,7 +136,7 @@
         - Go to your python shell ```python manage.py shell```
         - Import the bulk function ```from apps.search.documents import bulk_indexing```
         - Start bulk indexing of specific document ```bulk_indexing()```
-        - Start bulk deleting of specific document ```bulk_indexing()```
+        - Start bulk deleting of specific document ```bulk_deleting()```
         
 
 ## Setup Application Load Balancer (using Nginx on EC2)
