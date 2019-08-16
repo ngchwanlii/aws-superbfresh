@@ -56,7 +56,7 @@ class RegisterView(View):
             user = None
 
         if user:
-            return render(request, 'register.html', {'errmsg': 'Username exists'})
+            return render(request, 'register.html', {'errmsg': 'User exists'})
 
         """
         Business logic processing
@@ -71,7 +71,7 @@ class RegisterView(View):
         # send email asynchronously
         send_register_active_email.delay(email, username, token)
 
-        return redirect(reverse('goods:index'))
+        return render(request, 'activate_pending.html')
 
 
 class ActivateView(View):
@@ -258,11 +258,11 @@ class AddressView(LoginRequiredMixin, View):
         phone = request.POST.get('phone')
 
         if not all([receiver, addr, zip_code, phone]):
-            return render(request, 'user_center_site.html', {'errmsg': 'Fields incomplete'})
+            return render(request, 'user_center_address.html', {'errmsg': 'Fields incomplete'})
 
         # valid US phone number
         if not re.match(r'^\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$', phone):
-            return render(request, 'user_center_site.html', {'errmsg': 'Invalid phone number format'})
+            return render(request, 'user_center_address.html', {'errmsg': 'Invalid phone number format'})
 
         user = request.user
 
