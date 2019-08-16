@@ -78,7 +78,7 @@ class OrderCommitView(View):
         sku_ids = request.POST.get('sku_ids')  # sku_ids = 1,3,5,16....
 
         if not all([addr_id, pay_method, sku_ids]):
-            return JsonResponse({'res': 1, 'errmsg': 'Fields invalid or incomplete'})
+            return JsonResponse({'res': 1, 'errmsg': 'Address fields is incomplete'})
 
         if pay_method not in OrderInfo.PAYMENT_METHODS.keys():
             return JsonResponse({'res': 2, 'errmsg': 'Invalid payment method'})
@@ -191,7 +191,7 @@ class OrderPayView(View):
             return JsonResponse({'res': 2, 'errmsg': 'Invalid order'})
 
         stripe.api_key = settings.STRIPE_API_KEY
-        # stripe amout is in smallest unit = cents
+        # stripe amount is in smallest unit = cents
         # Ex: 100 = $1.00, and must be in int format
         line_items = []
         for order_good in order_goods:
@@ -204,16 +204,14 @@ class OrderPayView(View):
             })
 
         session = stripe.checkout.Session.create(
-            success_url="{BASE_SCHEME}://{BASE_HOST}:{BASE_PORT}/user/order/{PAGE}/{STATUS}".format(
+            success_url="{BASE_SCHEME}://{BASE_HOST}/user/order/{PAGE}/{STATUS}".format(
                 BASE_SCHEME=settings.BASE_SCHEME,
                 BASE_HOST=settings.BASE_HOST,
-                BASE_PORT=settings.BASE_PORT,
                 PAGE=page,
                 STATUS="success"),
-            cancel_url="{BASE_SCHEME}://{BASE_HOST}:{BASE_PORT}/user/order/{PAGE}/{STATUS}".format(
+            cancel_url="{BASE_SCHEME}://{BASE_HOST}/user/order/{PAGE}/{STATUS}".format(
                 BASE_SCHEME=settings.BASE_SCHEME,
                 BASE_HOST=settings.BASE_HOST,
-                BASE_PORT=settings.BASE_PORT,
                 PAGE=page,
                 STATUS="cancel"),
             payment_method_types=["card"],
