@@ -16,7 +16,6 @@ endpoint_secret = settings.STRIPE_WEBHOOK_ENDPOINT_SK
 class StripeWebhookView(CSRFExemptMixin, View):
 
     def post(self, request):
-
         payload = request.body
         sig_header = request.META['HTTP_STRIPE_SIGNATURE']
         event = None
@@ -26,10 +25,8 @@ class StripeWebhookView(CSRFExemptMixin, View):
                 payload, sig_header, endpoint_secret
             )
         except ValueError as e:
-            print("Invalid payload")
             return JsonResponse({'res': 400, 'errmsg': 'Invalid payload'})
         except stripe.error.SignatureVerificationError as e:
-            print("Invalid signature")
             return JsonResponse({'res': 400, 'errmsg': 'Invalid signature'})
 
         # Handle the checkout.session.completed event
