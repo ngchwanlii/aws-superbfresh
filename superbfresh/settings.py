@@ -24,7 +24,22 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG')
 
-ALLOWED_HOSTS = ['*']
+BASE_HOST = os.environ.get('BASE_HOST')
+BASE_SCHEME = os.environ.get('BASE_SCHEME')
+BASE_URL = "{BASE_SCHEME}://{BASE_HOST}".format(
+    BASE_SCHEME=BASE_SCHEME,
+    BASE_HOST=BASE_HOST,
+)
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.2/howto/static-files/
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.environ.get('STATIC_ROOT')
+
+ALLOWED_HOSTS = [
+    '*',
+]
 
 # Application definition
 
@@ -35,9 +50,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tinymce',
+    'storages',
     'apps.user',
     'apps.goods',
-    'tinymce',
+    'apps.order',
+    'apps.cart',
+    'apps.webhooks',
+    'apps.search',
 ]
 
 MIDDLEWARE = [
@@ -73,15 +93,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'superbfresh.wsgi.application'
-
-BASE_HOST = os.environ.get('BASE_HOST')
-BASE_PORT = os.environ.get('BASE_PORT')
-BASE_SCHEME = os.environ.get('BASE_SCHEME')
-BASE_URL = "{BASE_SCHEME}://{BASE_HOST}:{BASE_PORT}".format(
-    BASE_SCHEME=BASE_SCHEME,
-    BASE_HOST=BASE_HOST,
-    BASE_PORT=BASE_PORT
-)
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -119,6 +130,8 @@ SESSION_CACHE_ALIAS = "default"
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 AUTH_USER_MODEL = 'user.User'
+# default is /accounts/login?next=/user, we use our customized login view
+LOGIN_URL = '/user/login'
 # allow inactive user to login with authenticate(), then perform logic check in LoginView
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.AllowAllUsersModelBackend']
 
@@ -169,8 +182,26 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
+# Amazon S3 file storage settings
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+AWS_ACCESS_KEY_ID = None  # By setting to None, Boto3 will detect your IAM role who has permission to access S3
+AWS_SECRET_ACCESS_KEY = None  # By setting to None, Boto3 will detect your IAM role who has permission to access S3
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_FILE_OVERWRITE = False
+AWS_IS_GZIPPED = True  # for quicker delivery
+AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME')
+AWS_QUERYSTRING_AUTH = False
+AWS_DEFAULT_ACL = 'None'
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=31536000',
+}
+
+# Stripe API Key
+STRIPE_API_KEY = os.environ.get('STRIPE_SK_TEST')
+STRIPE_WEBHOOK_ENDPOINT_SK = os.environ.get('STRIPE_WEBHOOK_ENDPOINT_SK')
+
+# Settings for Amazon ElasticSearch
+AWS_ES_ENDPOINT = os.environ.get('AWS_ES_ENDPOINT')
+AWS_ES_REGION = os.environ.get('AWS_S3_REGION_NAME')
+AWS_ES_PORT = os.environ.get('AWS_ES_PORT')
