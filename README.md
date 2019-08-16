@@ -20,6 +20,9 @@
 - Web server gateway: uwsgi
 - Web server proxy: nginx
 
+## Software Architecture Diagram
+![Architecture](superbfresh-web-architecture.png)
+
 ## Implemented functionalities
 - [x] Backend function modules
     - [x] User module
@@ -54,9 +57,6 @@
         - [x] Filter: lowercase, stop, snowball
         - [x] Char_filter: html_strip
                       
-## Software Architecture Diagram
-![Architecture](superbfresh-web-architecture.png)
-
 ## General Setup
 - Install all dependency / packages ```pip3 install -r requirements.txt```
 - See instruction below to setup each services
