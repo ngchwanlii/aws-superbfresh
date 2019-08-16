@@ -62,8 +62,14 @@
 - See instruction below to setup each services
 - Remember to set your own nginx & uwsgi configuration
 
+## Setup EC2
+- [Setup Amazon Ec2](https://aws.amazon.com/ec2/getting-started/) 
+
+## Setup Database 
+- [Setup mySQL with Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_GettingStarted.html)
+
 ## Setup Redis
-- [Setup Amazon ElastiCache Redis Cluster (Free Tier)](https://aws.amazon.com/getting-started/tutorials/setting-up-a-redis-cluster-with-amazon-elasticache/)
+- [Setup Amazon ElastiCache Redis (Free Tier)](https://aws.amazon.com/getting-started/tutorials/setting-up-a-redis-cluster-with-amazon-elasticache/)
 - [Docs - django-redis](https://niwinz.github.io/django-redis/latest/#_why_use_django_redis)    
 - [Docs - redis-py](https://redis-py.readthedocs.io/en/latest/)
 - Use cases:
@@ -85,7 +91,7 @@
     - See [Run celery in background](https://docs.celeryproject.org/en/latest/userguide/daemonizing.html#generic-init-scripts)
         - Ex: ```celery -A celery_tasks.tasks worker --detach```
 
-## Setup for sending mail
+## Setup mail service
 - [Setup Amazon SES](https://aws.amazon.com/ses/)
 - NOTE:
     - Remember to request for increasing your SES Sending Limits and move out of Amazon SES sandbox to send email to others
@@ -139,14 +145,14 @@
 - Reload nginx ```nginx -s reload```
 - Configure your nginx config depends on your software architecture diagram.
 
-# Setup uWSGI settings & configuration (web server gateway interface)
+## Setup uWSGI settings & configuration (web server gateway interface)
 - [Setup uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/WSGIquickstart.html)
 - Loading configuration files in background
     - ```uwsgi --ini <uwsgi.ini>```
 - Stopping the uWSGI server 
     - ```uwsgi --stop <uwsgi.pid>```   
 
-# Collect staticfiles 
+## Collect staticfiles 
 - [Django collect staticfile](https://docs.djangoproject.com/en/2.2/ref/contrib/staticfiles/)
 - We can use a remote server that serve static files, or we could use CDN, like Amazon CloudFront
 
