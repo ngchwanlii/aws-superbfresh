@@ -141,7 +141,7 @@
 
 ## Setup Application Load Balancer (using Nginx on EC2)
 - [Setup nginx on EC2](https://docs.nginx.com/nginx/deployment-guides/amazon-web-services/ec2-instances-for-nginx/)
-- Server static files in ```nginx```, before that make sure to run ```python manage.py collectstatic``` in application server
+- Serve static files in ```nginx```, before that make sure to run ```python manage.py collectstatic``` in application server
 - Reload nginx ```nginx -s reload```
 - Configure your nginx config depends on your software architecture diagram.
 
