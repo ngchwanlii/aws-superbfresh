@@ -1,8 +1,5 @@
 # Superbfresh - Online Grocery Marketplace
 
-## Demo link
-- [Superbfresh demo link](http://ec2-54-241-168-86.us-west-1.compute.amazonaws.com)
-
 ## Description
 - Superbfresh is an online grocery marketplace based on B2C model. 
 
