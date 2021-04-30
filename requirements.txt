@@ -27,6 +27,6 @@ s3transfer==0.2.1
 six==1.12.0
 sqlparse==0.3.0
 stripe==2.33.2
-urllib3==1.25.3
+urllib3==1.25.8
 uWSGI==2.0.18
 vine==1.3.0
